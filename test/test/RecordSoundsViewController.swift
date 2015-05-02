@@ -28,12 +28,15 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     override func viewWillAppear(animated: Bool) {
         recordingInProgress.hidden = true
         stopButton.hidden = true
         recordButton.enabled = true
         tabRecord.hidden = false
     }
+    
+    //MARK: record audio
     @IBAction func recordAudio(sender: UIButton) {
         recordingInProgress.hidden = false
         tabRecord.hidden = true
@@ -64,14 +67,12 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         
     }
     
-    
+    //MARK store audio
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder!, successfully flag: Bool) {
         //save recorded audio
         if(flag){
             var recordedAudio = RecordedAudio(filePathUrl: NSURL(), title:String())
             recordedAudio = RecordedAudio(filePathUrl: recorder.url, title: recorder.url.lastPathComponent!)
-            //recordedAudio.filePathUrl = recorder.url
-            //recordedAudio.title = recorder.url.lastPathComponent!
             
             // move to enxt scene aka perform segue
             self.performSegueWithIdentifier("stopRecording", sender: recordedAudio)
@@ -81,6 +82,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             stopButton.hidden = true
         }
     }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if(segue.identifier == "stopRecording"){
             let playSoundsVC:PlaySoundsViewController = segue.destinationViewController as! PlaySoundsViewController
@@ -88,6 +90,8 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             playSoundsVC.receivedAudio = data
         }
     }
+    
+    // MARK: stopaudio
     @IBAction func stopAudio(sender: UIButton) {
         recordingInProgress.hidden = true
         audioRecorder.stop()
